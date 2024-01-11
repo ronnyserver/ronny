@@ -1,8 +1,9 @@
-use crate::cmd::entry::entry;
+use crate::cmd::entry;
 
 pub mod cmd;
 pub mod io;
 
-fn main() {
-    entry();
+#[tokio::main]
+async fn main() {
+    entry::entry().await;
 }
