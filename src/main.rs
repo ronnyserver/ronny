@@ -1,6 +1,7 @@
 use crate::cmd::entry;
 
 pub mod cmd;
+pub mod http;
 pub mod io;
 
 #[tokio::main]
