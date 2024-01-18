@@ -24,10 +24,6 @@ impl Response {
     // 构建
     pub fn build(&mut self) {
         self.headers.insert(
-            "Content-Type".to_string(),
-            "text/plain; charset=UTF-8".to_string(),
-        );
-        self.headers.insert(
             "Content-Length".to_string(),
             self.body.as_bytes().len().to_string(),
         );

@@ -1,5 +1,7 @@
-use crate::http::request::Request;
 use crate::http::response::Response;
+use crate::{http::request::Request, modules::file_server::FileServer};
+use log;
+
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
     net::{TcpListener, TcpStream},
@@ -25,28 +27,13 @@ async fn process(mut socket: TcpStream) {
         peer_addr.port()
     );
     let mut buf = [0; 1024];
+    let file_server = FileServer::new("./html".to_string(), "".to_string());
     match socket.read(&mut buf).await {
         Ok(_) => {
             let request_str = String::from_utf8_lossy(&buf);
             let request = Request::parse(&request_str);
-
-            // 处理请求
-            let mut response = match request.path.as_str() {
-                "/" => Response::new("1.1", "200 OK", "Welcome to the homepage!"),
-                "/hello" => Response::new("1.1", "200 OK", "Hello, 世界!"),
-                _ => Response::new("1.1", "404 NOT FOUND", "Not found"),
-            };
-
-            response.build();
-            // 发送响应
-            if let Err(e) = socket.write_all(response.format().as_bytes()).await {
-                println!("发送响应失败: {}", e);
-            }
+            file_server.serve(request, socket).await
         }
-        Err(err) => print_err(err),
+        Err(err) => log::error!("socket read error: {err}"),
     }
-}
-
-fn print_err(err: std::io::Error) {
-    println!("{}", err)
 }
