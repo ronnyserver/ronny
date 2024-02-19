@@ -1,9 +1,8 @@
-use crate::http::response::Response;
 use crate::{http::request::Request, modules::file_server::FileServer};
 use log;
 
 use tokio::{
-    io::{AsyncReadExt, AsyncWriteExt},
+    io::AsyncReadExt,
     net::{TcpListener, TcpStream},
 };
 
@@ -27,7 +26,7 @@ async fn process(mut socket: TcpStream) {
         peer_addr.port()
     );
     let mut buf = [0; 1024];
-    let file_server = FileServer::new("./html".to_string(), "".to_string());
+    let file_server = FileServer::new("./html".to_string(), vec![]);
     match socket.read(&mut buf).await {
         Ok(_) => {
             let request_str = String::from_utf8_lossy(&buf);

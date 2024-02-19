@@ -1,5 +1,8 @@
+use std::error::Error;
+
 use crate::io::serve;
 use clap::Parser;
+
 /// Simple program to start a http server
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -13,9 +16,9 @@ struct Args {
     port: u16,
 }
 
-pub async fn entry() {
+pub async fn entry() -> Result<(), Box<dyn Error>> {
     let args = Args::parse();
 
     println!("Listening on {}:{}", args.host, args.port);
-    serve(args.host, args.port).await;
+    serve(args.host, args.port).await
 }
